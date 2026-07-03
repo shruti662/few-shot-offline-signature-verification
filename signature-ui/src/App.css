@@ -1,0 +1,123 @@
+body {
+  margin: 0;
+  font-family: "Segoe UI", sans-serif;
+  background: #f4f6f9;
+}
+
+.app {
+  max-width: 700px;
+  margin: auto;
+  padding: 30px 20px;
+  text-align: center;
+}
+
+.title {
+  margin-bottom: 20px;
+}
+
+/* UPLOAD BOX */
+.upload-box {
+  background: white;
+  padding: 20px;
+  margin-bottom: 20px;
+  border-radius: 12px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+}
+
+/* CHANGE BUTTON */
+.change-btn {
+  padding: 6px 12px;
+  border: none;
+  background: #ddd;
+  border-radius: 6px;
+  cursor: pointer;
+  margin-bottom: 10px;
+}
+
+/* PREVIEW */
+.preview-row {
+  display: flex;
+  justify-content: center;
+}
+
+.preview-row img {
+  width: 100px;
+  height: 100px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+}
+
+.reference-note {
+  font-size: 12px;
+  color: #777;
+  margin-top: 6px;
+}
+
+.query-preview img {
+  width: 140px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+}
+
+/* BUTTON */
+.verify-btn {
+  padding: 12px 28px;
+  border: none;
+  background: #007bff;
+  color: white;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.verify-btn:hover {
+  background: #0056b3;
+}
+
+/* RESULT CARD */
+.result-card {
+  margin-top: 25px;
+  padding: 25px;
+  border-radius: 12px;
+  color: white;
+  text-align: center;
+}
+
+/* COLORS */
+.result-card.green {
+  background: linear-gradient(135deg, #4CAF50, #2e7d32);
+}
+
+.result-card.red {
+  background: linear-gradient(135deg, #f44336, #c62828);
+}
+
+.result-card.orange {
+  background: linear-gradient(135deg, #ff9800, #ef6c00);
+}
+
+/* TEXT */
+.result-card h2 {
+  font-size: 28px;
+  margin-bottom: 10px;
+}
+
+.metrics {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 15px;
+}
+
+.metrics span {
+  display: block;
+  font-size: 12px;
+}
+
+.metrics strong {
+  font-size: 18px;
+}
+
+.borderline {
+  font-weight: bold;
+  margin-top: 10px;
+}

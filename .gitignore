@@ -1,0 +1,11 @@
+venv/
+dataset/
+__pycache__/
+*.pyc
+node_modules/
+
+# Ignore all model weights
+models/*.pth
+
+# Except the final model
+!models/siamese_bestgpds.pth
