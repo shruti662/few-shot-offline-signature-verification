@@ -32,9 +32,8 @@ The application provides a complete web-based interface developed using **React.
 # System Architecture
 
 <p align="center">
-<img src="screenshots/architecture.png" width="900">
+  <img src="screenshots/architecture.jpeg" width="900">
 </p>
-
 ---
 
 # Project Workflow
@@ -160,7 +159,7 @@ The proposed framework consistently achieved over **93% verification accuracy** 
 ## Home Page
 
 <p align="center">
-<img src="screenshots/home.png" width="900">
+  <img src="screenshots/home.png" width="900">
 </p>
 
 ---
@@ -168,7 +167,7 @@ The proposed framework consistently achieved over **93% verification accuracy** 
 ## Genuine Signature Verification
 
 <p align="center">
-<img src="screenshots/genuine.png" width="900">
+  <img src="screenshots/genuine.jpg" width="900">
 </p>
 
 ---
@@ -176,15 +175,15 @@ The proposed framework consistently achieved over **93% verification accuracy** 
 ## Forged Signature Verification
 
 <p align="center">
-<img src="screenshots/forged.png" width="900">
+  <img src="screenshots/forged.jpg" width="900">
 </p>
 
 ---
 
-## Borderline Verification
+## Algorithm
 
 <p align="center">
-<img src="screenshots/borderline.png" width="900">
+  <img src="screenshots/algorithm.png" width="900">
 </p>
 
 ---
