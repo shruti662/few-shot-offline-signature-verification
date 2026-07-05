@@ -73,7 +73,9 @@ def home():
 # -----------------------------
 @app.route("/verify", methods=["POST"])
 def verify():
+    print("========== VERIFY REQUEST RECEIVED ==========")
     try:
+        print("Entered try block")
         ref_files = request.files.getlist("reference")
         query_file = request.files["query"]
 
