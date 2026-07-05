@@ -54,6 +54,20 @@ def get_embedding(img):
         emb = F.normalize(x.squeeze(0), p=2, dim=0)
     return emb
 
+
+# -----------------------------
+# Home Route
+# -----------------------------
+@app.route("/")
+def home():
+    return jsonify({
+        "status": "online",
+        "project": "Few-Shot Offline Signature Verification API",
+        "message": "API is running successfully.",
+        "endpoint": "/verify"
+    })
+
+
 # -----------------------------
 # API Route
 # -----------------------------
