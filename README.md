@@ -127,18 +127,26 @@ The proposed verification model consists of:
 - Contrastive Loss
 - Prototype-Based Verification
 
-### Training Configuration
+# Training Configuration
 
 | Parameter | Value |
-|------------|-------|
+|------------|--------|
+| Framework | PyTorch |
+| Network | Siamese CNN |
 | Optimizer | Adam |
 | Learning Rate | 0.0005 |
 | Loss Function | Contrastive Loss |
-| Epochs | 30 |
-| Batch Size | 32 |
-| Device | CPU / GPU |
+| Batch Size | 16 |
+| Maximum Epochs | 50 |
+| Early Stopping | Patience = 5 |
+| Best Model Selection | Lowest Training Loss |
+| Similarity Measure | Euclidean Distance |
+| Embedding Normalization | L2 Normalization |
+| Verification Method | Prototype-Based Verification |
+| Decision Threshold | Adaptive Threshold |
+| Deployment Support | CPU / GPU |
 
----
+--
 
 # Performance Evaluation
 
