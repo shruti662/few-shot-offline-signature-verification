@@ -188,6 +188,18 @@ The proposed framework consistently achieved over **93% verification accuracy** 
 
 ---
 
+## Verification Result
+
+<p align="center">
+  <img src="screenshots/verification result (forged).png" width="900">
+</p>
+
+<p align="center">
+  <img src="screenshots/verification result (genuine).png" width="900">
+</p>
+
+---
+
 ## Algorithm
 
 <p align="center">
