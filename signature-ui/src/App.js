@@ -37,7 +37,10 @@ function App() {
     formData.append("query", query);
 
     try {
-      const res = await axios.post("http://localhost:5000/verify", formData);
+      const API =
+      process.env.REACT_APP_API_URL || "http://localhost:5000";
+
+      const res = await axios.post(`${API}/verify`, formData);
 
       setResult(res.data.result);
       setDistance(res.data.distance);
