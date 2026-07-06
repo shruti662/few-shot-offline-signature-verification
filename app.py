@@ -5,6 +5,8 @@ import torch.nn.functional as F
 from PIL import Image
 import torchvision.transforms as transforms
 import numpy as np
+import traceback
+import os
 
 from siamese_network import SiameseNetwork
 
@@ -17,14 +19,20 @@ CORS(app)
 # -----------------------------
 # Load Model
 # -----------------------------
+print("Loading model...")
+
 model = SiameseNetwork()
 
-state_dict = torch.load("models/siamese_bestgpds.pth", map_location=torch.device('cpu'))
+state_dict = torch.load(
+    "models/siamese_bestgpds.pth",
+    map_location=torch.device("cpu")
+)
 
 model_dict = model.state_dict()
 
 filtered_dict = {
-    k: v for k, v in state_dict.items()
+    k: v
+    for k, v in state_dict.items()
     if k in model_dict and v.shape == model_dict[k].shape
 }
 
@@ -54,7 +62,6 @@ def get_embedding(img):
         emb = F.normalize(x.squeeze(0), p=2, dim=0)
     return emb
 
-
 # -----------------------------
 # Home Route
 # -----------------------------
@@ -67,60 +74,84 @@ def home():
         "endpoint": "/verify"
     })
 
-
 # -----------------------------
-# API Route
+# Verify Route
 # -----------------------------
 @app.route("/verify", methods=["POST"])
 def verify():
-    print("VERIFY HIT")
-    
+
+    print("\n==============================")
+    print("VERIFY REQUEST RECEIVED")
+    print("==============================")
+
     try:
-        print("Entered try block")
+
+        print("Step 1 : Reading uploaded files")
+
         ref_files = request.files.getlist("reference")
         query_file = request.files["query"]
 
-        if len(ref_files) != 5:
-            return jsonify({"error": "Upload exactly 5 reference signatures"}), 400
+        print("Reference Files :", len(ref_files))
+        print("Query File Received")
 
-        # -------------------------
-        # Reference embeddings
-        # -------------------------
+        if len(ref_files) != 5:
+            return jsonify({
+                "error": "Upload exactly 5 reference signatures"
+            }), 400
+
+        print("Step 2 : Creating reference embeddings")
+
         embeddings = []
-        for file in ref_files:
+
+        for idx, file in enumerate(ref_files):
+
+            file.stream.seek(0)
+
             img = Image.open(file).convert("L")
             img = transform(img)
+
             embeddings.append(get_embedding(img))
+
+            print(f"Reference {idx+1} embedding created")
 
         ref_embeddings = torch.stack(embeddings)
 
-        # -------------------------
-        # Prototype
-        # -------------------------
+        print("All reference embeddings created")
+
+        print("Step 3 : Computing prototype")
+
         prototype = ref_embeddings.mean(dim=0)
 
-        # -------------------------
-        # Intra-class distance
-        # -------------------------
+        print("Prototype computed")
+
+        print("Step 4 : Computing adaptive threshold")
+
         intra_distances = []
 
         for i in range(len(ref_embeddings)):
             for j in range(i + 1, len(ref_embeddings)):
                 intra_distances.append(
-                    torch.norm(ref_embeddings[i] - ref_embeddings[j]).item()
+                    torch.norm(
+                        ref_embeddings[i] - ref_embeddings[j]
+                    ).item()
                 )
 
         avg_intra_dist = np.median(intra_distances)
 
-        # 🔥 Adaptive threshold
         threshold = avg_intra_dist * 1.1
 
-        # -------------------------
-        # Query embedding
-        # -------------------------
+        print("Threshold :", threshold)
+
+        print("Step 5 : Processing query image")
+
+        query_file.stream.seek(0)
+
         query_img = Image.open(query_file).convert("L")
         query_img = transform(query_img)
+
         query_emb = get_embedding(query_img)
+
+        print("Query embedding created")
 
         query_dist = torch.norm(query_emb - prototype).item()
 
@@ -133,44 +164,45 @@ def verify():
         std_pairwise = np.std(pairwise)
         max_pairwise = np.max(pairwise)
 
-        print(f"Mean: {mean_pairwise:.4f} | Threshold: {threshold:.4f}")
-        print(f"Std: {std_pairwise:.4f} | Max: {max_pairwise:.4f}")
+        print(f"Mean : {mean_pairwise:.4f}")
+        print(f"Std  : {std_pairwise:.4f}")
+        print(f"Max  : {max_pairwise:.4f}")
 
-        # -------------------------
-        # 🔥 FINAL DECISION LOGIC
-        # -------------------------
+        print("Step 6 : Decision")
+
         is_borderline = False
 
-        # 🔴 Rule 1: Too consistent → likely forged
         if std_pairwise < 0.015:
             result = "Forged"
 
-        # 🔴 Rule 2: Flat distribution → forged
         elif (max_pairwise - mean_pairwise) < 0.02:
             result = "Forged"
 
-        # 🔴 Rule 3: Outside cluster
         elif mean_pairwise > threshold:
             result = "Forged"
 
         else:
+
             lower = threshold * 0.9
 
-            # Clearly genuine
             if mean_pairwise < lower:
                 result = "Genuine"
 
-            # Borderline
             else:
+
                 is_borderline = True
 
-                cond1 = query_dist < (threshold * 1.1)
-                cond2 = std_pairwise > 0.01   # ensure variation
-                cond3 = max_pairwise < (threshold * 1.2)
+                cond1 = query_dist < threshold * 1.1
+                cond2 = std_pairwise > 0.01
+                cond3 = max_pairwise < threshold * 1.2
 
                 score = sum([cond1, cond2, cond3])
 
                 result = "Genuine" if score >= 2 else "Forged"
+
+        print("Result :", result)
+
+        print("Returning response")
 
         return jsonify({
             "result": result,
@@ -180,15 +212,18 @@ def verify():
         })
 
     except Exception as e:
-        print("❌ Error:", str(e))
-        return jsonify({"status": "verify route reached"})
+
+        print("\n❌ EXCEPTION OCCURRED")
+        traceback.print_exc()
+
+        return jsonify({
+            "error": str(e)
+        }), 500
 
 
 # -----------------------------
 # Run Server
 # -----------------------------
-import os
-
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port)

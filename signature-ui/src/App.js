@@ -14,10 +14,12 @@ function App() {
   // Upload handlers
   const handleRefUpload = (files) => {
     const arr = Array.from(files);
+
     if (arr.length !== 5) {
       alert("Upload exactly 5 reference signatures");
       return;
     }
+
     setReferences(arr);
   };
 
@@ -27,32 +29,63 @@ function App() {
 
   // Submit
   const handleSubmit = async () => {
+
     if (references.length !== 5 || !query) {
       alert("Upload all required images");
       return;
     }
 
     const formData = new FormData();
-    references.forEach((f) => formData.append("reference", f));
+
+    references.forEach((file) => {
+      formData.append("reference", file);
+    });
+
     formData.append("query", query);
 
-    try {
-      const API =
+    const API =
       process.env.REACT_APP_API_URL || "http://localhost:5000";
 
-      const res = await axios.post(`${API}/verify`, formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-     },
-     timeout: 120000,
-    });
+    console.log("API URL:", API);
+
+    try {
+
+      const res = await axios.post(
+        `${API}/verify`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data"
+          },
+          timeout: 120000
+        }
+      );
+
+      console.log("Response:", res.data);
 
       setResult(res.data.result);
       setDistance(res.data.distance);
       setThreshold(res.data.threshold);
       setIsBorderline(res.data.is_borderline);
-    } catch {
-      alert("Backend error");
+
+    } catch (err) {
+
+      console.error("========== AXIOS ERROR ==========");
+      console.error(err);
+
+      if (err.response) {
+        console.log("Status:", err.response.status);
+        console.log("Response Data:", err.response.data);
+      }
+      else if (err.request) {
+        console.log("No response received from backend.");
+        console.log(err.request);
+      }
+      else {
+        console.log("Error:", err.message);
+      }
+
+      alert("Backend error. Check browser console (F12).");
     }
   };
 
@@ -65,34 +98,43 @@ function App() {
 
   return (
     <div className="app">
-      <h1 className="title">Signature Verification System</h1>
 
-      {/* REFERENCE SECTION */}
+      <h1 className="title">
+        Signature Verification System
+      </h1>
+
+      {/* Reference Upload */}
+
       <div className="upload-box">
+
         <h3>Reference Signatures (5)</h3>
 
         {references.length === 0 ? (
+
           <input
             type="file"
             multiple
             onChange={(e) => handleRefUpload(e.target.files)}
           />
+
         ) : (
+
           <button
             className="change-btn"
             onClick={() => setReferences([])}
           >
             Change Files
           </button>
+
         )}
 
-        {/* 🔥 SHOW ONLY 1 IMAGE */}
         {references.length > 0 && (
           <>
+
             <div className="preview-row">
               <img
                 src={URL.createObjectURL(references[0])}
-                alt="reference"
+                alt="Reference"
               />
             </div>
 
@@ -101,61 +143,88 @@ function App() {
                 + {references.length - 1} more similar signatures
               </p>
             )}
+
           </>
         )}
+
       </div>
 
-      {/* QUERY SECTION */}
+      {/* Query Upload */}
+
       <div className="upload-box">
+
         <h3>Query Signature</h3>
 
         {!query ? (
+
           <input
             type="file"
             onChange={(e) => handleQueryUpload(e.target.files)}
           />
+
         ) : (
+
           <button
             className="change-btn"
             onClick={() => setQuery(null)}
           >
             Change File
           </button>
+
         )}
 
         {query && (
           <div className="query-preview">
-            <img src={URL.createObjectURL(query)} alt="" />
+            <img
+              src={URL.createObjectURL(query)}
+              alt="Query"
+            />
           </div>
         )}
+
       </div>
 
-      {/* VERIFY BUTTON */}
-      <button className="verify-btn" onClick={handleSubmit}>
+      {/* Verify */}
+
+      <button
+        className="verify-btn"
+        onClick={handleSubmit}
+      >
         Verify Signature
       </button>
 
-      {/* RESULT */}
+      {/* Result */}
+
       {result && (
+
         <div className={`result-card ${getColorClass()}`}>
+
           <h2>{result}</h2>
 
           {isBorderline && (
-            <p className="borderline">⚠ Borderline Case</p>
+            <p className="borderline">
+              ⚠ Borderline Case
+            </p>
           )}
 
           <div className="metrics">
+
             <div>
               <span>Distance</span>
               <strong>{distance}</strong>
             </div>
+
             <div>
               <span>Threshold</span>
               <strong>{threshold}</strong>
             </div>
+
           </div>
+
         </div>
+
       )}
+
     </div>
   );
 }
