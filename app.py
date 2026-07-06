@@ -80,8 +80,11 @@ def home():
 @app.route("/verify", methods=["POST"])
 def verify():
     print("VERIFY REQUEST RECEIVED")
-    return jsonify({"success": True})
+    print(request.files)
 
+    return jsonify({
+        "success": True
+    })
     try:
 
         print("Step 1 : Reading uploaded files")
