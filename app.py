@@ -73,7 +73,8 @@ def home():
 # -----------------------------
 @app.route("/verify", methods=["POST"])
 def verify():
-    print("========== VERIFY REQUEST RECEIVED ==========")
+    print("VERIFY HIT")
+    
     try:
         print("Entered try block")
         ref_files = request.files.getlist("reference")
@@ -180,7 +181,7 @@ def verify():
 
     except Exception as e:
         print("❌ Error:", str(e))
-        return jsonify({"error": str(e)}), 500
+        return jsonify({"status": "verify route reached"})
 
 
 # -----------------------------
