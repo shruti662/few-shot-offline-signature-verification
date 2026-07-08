@@ -105,10 +105,10 @@ Decision
 
 The proposed framework was developed and evaluated using three publicly available offline signature datasets.
 
-| Dataset | Description |
-|----------|-------------|
-| GPDS-300 | Large-scale offline signature dataset |
-| CEDAR | Benchmark offline signature dataset |
+| Dataset  | Description                            |
+| -------- | -------------------------------------- |
+| GPDS-300 | Large-scale offline signature dataset  |
+| CEDAR    | Benchmark offline signature dataset    |
 | MCYT-100 | Multilingual offline signature dataset |
 
 > **Note:** The datasets are not included in this repository due to licensing restrictions and their large storage requirements.
@@ -129,22 +129,22 @@ The proposed verification model consists of:
 
 # Training Configuration
 
-| Parameter | Value |
-|------------|--------|
-| Framework | PyTorch |
-| Network | Siamese CNN |
-| Optimizer | Adam |
-| Learning Rate | 0.0005 |
-| Loss Function | Contrastive Loss |
-| Batch Size | 16 |
-| Maximum Epochs | 50 |
-| Early Stopping | Patience = 5 |
-| Best Model Selection | Lowest Training Loss |
-| Similarity Measure | Euclidean Distance |
-| Embedding Normalization | L2 Normalization |
-| Verification Method | Prototype-Based Verification |
-| Decision Threshold | Adaptive Threshold |
-| Deployment Support | CPU / GPU |
+| Parameter               | Value                        |
+| ----------------------- | ---------------------------- |
+| Framework               | PyTorch                      |
+| Network                 | Siamese CNN                  |
+| Optimizer               | Adam                         |
+| Learning Rate           | 0.0005                       |
+| Loss Function           | Contrastive Loss             |
+| Batch Size              | 16                           |
+| Maximum Epochs          | 50                           |
+| Early Stopping          | Patience = 5                 |
+| Best Model Selection    | Lowest Training Loss         |
+| Similarity Measure      | Euclidean Distance           |
+| Embedding Normalization | L2 Normalization             |
+| Verification Method     | Prototype-Based Verification |
+| Decision Threshold      | Adaptive Threshold           |
+| Deployment Support      | CPU / GPU                    |
 
 --
 
@@ -152,11 +152,11 @@ The proposed verification model consists of:
 
 The final prototype-based verification framework was evaluated using three benchmark offline signature datasets.
 
-| Dataset | Accuracy (%) |
-|----------|-------------:|
-| GPDS-300 | **94.16** |
-| CEDAR | **93.07** |
-| MCYT-100 | **93.44** |
+| Dataset  | Accuracy (%) |
+| -------- | -----------: |
+| GPDS-300 |    **94.16** |
+| CEDAR    |    **93.07** |
+| MCYT-100 |    **93.44** |
 
 The proposed framework consistently achieved over **93% verification accuracy** while requiring only **five genuine reference signatures**, demonstrating the effectiveness of few-shot metric learning for offline signature verification.
 
@@ -305,7 +305,7 @@ npm start
 5. A prototype embedding is generated from the reference signatures.
 6. An adaptive threshold is computed using intra-reference signature distances.
 7. The query signature is compared with the prototype.
-8. The system classifies the query as **Genuine**, **Forged**, or **Borderline**.
+8. The system classifies the query as **Genuine** or **Forged**
 
 ---
 
